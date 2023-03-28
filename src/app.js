@@ -3,6 +3,8 @@ const inputEl = document.getElementById("input");
 const searchButtonEl = document.getElementById("search");
 const ErrorMessageEl = document.getElementById("error-message");
 
+const tableContentEl = document.getElementById("table-content");
+
 const weatherConditionEl = document.getElementById("weather-condition");
 
 
@@ -14,7 +16,6 @@ function getWeatherData(city) {
     
     fetch(`http://api.weatherapi.com/v1/current.json?key=bf3ec35ab33a49ca9cb140734232703&q=${city}&aqi=no`)
     .then(response => response.json())
-    // .then((data) => console.log(data));
     .then(data => {
       
       if (data.error) {
@@ -22,6 +23,21 @@ function getWeatherData(city) {
       } else {
         weatherConditionEl.textContent = `Weather condition: ${data.current.condition.text}`;
         dataEl.textContent = JSON.stringify(data, null, 4);
+
+        // alternative loop
+        let content = "";
+        
+        for (const [key, value] of Object.entries(data.location)) {
+          content = content + `
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <td class="px-6 py-4">${key}</td>
+                <td class="px-6 py-4">${value}</td>
+            </tr>
+          `;
+        };
+        
+        tableContentEl.innerHTML = content;
+        // end alternative loop
       };
 
     })
